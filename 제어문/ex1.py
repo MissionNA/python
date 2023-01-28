@@ -23,3 +23,4 @@ for i in range(1,51): #1~50명 승객수 지정
     else: #매칭실패했을떄
         print('[x] {0}번쨰 손님(소요시간:{1}분'.format(i,time))
 print('총 탑승 승객 수:{0}명'.format(count))
+

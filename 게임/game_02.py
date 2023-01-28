@@ -7,6 +7,8 @@ def restart():
     global isGameOver,score
     isGameOver=False
     score=0
+    for i in range(len(missile)):
+        recMissile[i].y= -1
     for i in range(len(star)):
        recStar[i].y= -1
 # 키보드(키값) 정의
@@ -28,8 +30,10 @@ def eventProcess():
                 move.y =1
             if event.key == pygame.K_r:
                 restart()
-
-
+            if event.key == pygame.K_LSHIFT:
+                makeMissile()
+            if event.key == pygame.K_CAPSLOCK:
+                makeMissile()
 def movePlayer():
     if not isGameOver:
         recPlayer.x +=move.x
@@ -82,7 +86,63 @@ def moveStar():
             recStar[i].y = 0
 
         SCREEN.blit(star[i],recStar[i])
+############################################################################################
+#충돌
+def checkCollisionMissile():
+    global score,isGameOver
+
+    if isGameOver:
+        return
+
+    for rec in recStar:
+        if rec.y == -1:
+            continue
+
+        for recM in recMissile:
+            if rec.y == -1:
+                continue
+            if rec.top < recM.bottom \
+                and recM.top < rec.bottom \
+                and rec.left < recM.right \
+                and recM.left < rec.right: 
+                rec.y = -1
+                recM.y= -1
+                score +=10
+                break    
+
+
+
+    #미사일 생성
+
+def makeMissile():
+    if isGameOver:
+        return
+
+    for i in range(len(missile)):
+        if recMissile[i].y == -1:
+            recMissile[i].x =recPlayer.x
+            recMissile[i].y = recPlayer.y
+            break
+
+def moveMissile():
+    # makeMissile()
+    for i in range(len(missile)):
         
+
+    #미사일 움직이고 화면제한
+        if recMissile[i].y == -1:
+            continue
+
+        if not isGameOver:
+            recMissile[i].y -= 1
+
+        if recMissile[i].y < 0:
+            recMissile[i].y = -1
+
+        SCREEN.blit(missile[i],recMissile[i])
+
+#########################################################################################
+ 
 #충돌
 def checkCollision():
     global score,isGameOver
@@ -97,10 +157,9 @@ def checkCollision():
             and recPlayer.top < rec.bottom \
             and rec.left < recPlayer.right \
             and recPlayer.left < rec.right: 
-            print('충돌')
             isGameOver=True
             break
-    score +=1
+
 
 #게임오버시 출력 문자 동작넣기(깜빡깜빡)
 def blinking():
@@ -136,7 +195,7 @@ move = Rect(0,0,0,0) # pygame에서 지원하는 Rect : x, y, 가로, 세로
 time_delay_500ms=0
 time_delay_4sec=0
 toggle=False
-score=3500
+score=350000
 isGameOver=False # 충돌 안된상태부터 시작하므로 값은 False
 # 스크린 생성
 pygame.init()
@@ -157,25 +216,34 @@ recPlayer.centery =(SCREEN_HEIGHT-10)
 
 
 # 유성 넣기(생성)
-star = [pygame.image.load("D:\pythonWorkspace\게임\star.png") for i in range(100)]
+star = [pygame.image.load("D:\pythonWorkspace\게임\star.png") for i in range(25)]
 recStar=[None for i in range(len(star))]
 for i in range(len(star)):
-    star[i] = pygame.transform.scale(star[i],(2,2)) # 스타(유성의) 가로 세로 비율(50과 80이 비율임)
+    star[i] = pygame.transform.scale(star[i],(20,20)) # 스타(유성의) 가로 세로 비율
     recStar[i] = star[i].get_rect() #좌표생성
     recStar[i].y = -1
 
+# 유성 넣기(생성)
+missile = [pygame.image.load("D:\python\게임\missile.png") for i in range(400)]
+recMissile=[None for i in range(len(missile))]
+for i in range(len(missile)):
+    missile[i] = pygame.transform.scale(missile[i],(7,30)) # 스타(유성의) 가로 세로 비율
+    recMissile[i] = missile[i].get_rect() #좌표생성
+    recMissile[i].y = -1
 
 
 clock = pygame.time.Clock()
 
 while isActive:
-    SCREEN.fill((0,0,0))
-    eventProcess()
-    movePlayer()
-    moveStar()
-    checkCollision()
-    setText()
-    blinking()
+    SCREEN.fill((0,0,0)) #화면지움
+    eventProcess() #이벤트처리
+    movePlayer() #플레이어생성&이동
+    moveStar() #유성생성&이동
+    moveMissile() #미사일생성&이동
+    checkCollisionMissile()
+    checkCollision() #충돌테스트
+    setText() #텍스트 출력
+
 
     pygame.display.flip()
     clock.tick(100)
