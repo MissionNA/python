@@ -160,7 +160,7 @@ recPlayer.centery =(SCREEN_HEIGHT-10)
 star = [pygame.image.load("D:\pythonWorkspace\게임\star.png") for i in range(100)]
 recStar=[None for i in range(len(star))]
 for i in range(len(star)):
-    star[i] = pygame.transform.scale(star[i],(20,20)) # 스타(유성의) 가로 세로 비율(50과 80이 비율임)
+    star[i] = pygame.transform.scale(star[i],(2,2)) # 스타(유성의) 가로 세로 비율(50과 80이 비율임)
     recStar[i] = star[i].get_rect() #좌표생성
     recStar[i].y = -1
 
@@ -178,4 +178,4 @@ while isActive:
     blinking()
 
     pygame.display.flip()
-    clock.tick(10)
+    clock.tick(100)
