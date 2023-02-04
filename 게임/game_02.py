@@ -30,9 +30,11 @@ def eventProcess():
                 move.y =1
             if event.key == pygame.K_r:
                 restart()
-            if event.key == pygame.K_LSHIFT:
+            if event.key == pygame.K_z:
                 makeMissile()
-            if event.key == pygame.K_CAPSLOCK:
+            if event.key == pygame.K_x:
+                makeMissile()
+            if event.key == pygame.K_c:
                 makeMissile()
 def movePlayer():
     if not isGameOver:
