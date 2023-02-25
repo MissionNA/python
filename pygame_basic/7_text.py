@@ -118,7 +118,7 @@ while running: #반복문
     time = game_font.render(str((total_time - elapsed_time)), True , (255,0,0))
     screen.blit(time,(10,10))
     #만약 시간 <0이면 종료
-    if total_time - elapsed_time <= 0 :
+    if total_time - elapsed_time <= 0:
         print('타임아웃')
         running = False
     pygame.display.update()
