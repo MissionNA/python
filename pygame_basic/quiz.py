@@ -43,7 +43,7 @@ character_y_pos = (screen_heigth - character_heigth)
 #이동 위치
 to_x = 0
 
-character_speed = 15
+character_speed = 17
 
 #똥만들기
 poo= pygame.image.load('D:/python/pygame_basic/poo.png')
@@ -52,7 +52,7 @@ poo_width = poo_size[0]
 poo_heigth = poo_size[1]
 poo_x_pos = random.randint(0,screen_width-poo_width)
 poo_y_pos = 0
-poo_speed = 15
+poo_speed = 17
 
 running = True 
 while running: 
