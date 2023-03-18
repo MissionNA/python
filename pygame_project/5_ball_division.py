@@ -71,7 +71,7 @@ balls= []
 #최초로 발생하는 큰 공
 balls.append({
     'pos_x':50, #공의 x좌표
-    'pos_y':40,  #공의 y좌표
+    'pos_y':50,  #공의 y좌표
     'img_idx' :0, #공 1번 이미지
     'to_x':3, #x축이동방향, -3이면 왼쪽,3이면 오른쪽
     'to_y':-6, #y축 이동방향,
@@ -85,7 +85,7 @@ ball_to_remove = -1
 
 running = True 
 while running: 
-    dt = clock.tick(25 ) 
+    dt = clock.tick(30) 
 
     # 2.이벤트처리 (키보드 마우스 등등)
     for event in pygame.event.get(): 
@@ -128,20 +128,21 @@ while running:
         ball_width = ball_size[0]
         ball_height = ball_size[1]
 
-    #가로벽에 닿았을 떄 공 이동 위치 변경(튕겨나오는 효과)
-    if ball_pos_x<=0 or ball_pos_x> screen_width - ball_width:
-        ball_val['to_x'] =  ball_val['to_x']*-1
-    elif ball_pos_y<=0-ball_height or ball_pos_y> screen_heigth - ball_height:
-        ball_val['to_y'] =  ball_val['to_y']*-1
-    #세로위치   :스테이지 튕겨서 올라가는 공처리
-    if  ball_pos_y >= screen_heigth - stage_height - ball_width:
-        ball_val['to_y'] =  ball_val['init_spd_y']
-    else: #그 외의 모든 경우에는 속도를 줄여나감(증가)
-        ball_val['to_y'] += 0.5    
+        #가로벽에 닿았을 떄 공 이동 위치 변경(튕겨나오는 효과)
+        if ball_pos_x<=0 or ball_pos_x> screen_width - ball_width:
+            ball_val['to_x'] =  ball_val['to_x']*-1
 
-    ball_val['pos_x'] += ball_val['to_x']       
-    ball_val['pos_y'] += ball_val['to_y']                                                                                           
+        #세로위치   :스테이지 튕겨서 올라가는 공처리
+        if  ball_pos_y >= screen_heigth - stage_height - ball_height:
+            ball_val['to_y'] =  ball_val['init_spd_y']
+        else: #그 외의 모든 경우에는 속도를 줄여나감(증가)
+            ball_val['to_y'] += 0.5    
+
+        ball_val['pos_x'] += ball_val['to_x']       
+        ball_val['pos_y'] += ball_val['to_y']                                                                                           
     #4.충돌 처리
+
+    #캐릭터rect정보 업데이트
     character_rect = character.get_rect()
     character_rect.left = character_x_pos
     character_rect.top = character_y_pos
@@ -180,13 +181,12 @@ while running:
                     #나눠진 공 정보 
                     small_ball_rect = ball_images[ball_img_idx+1].get_rect()
                     small_ball_width = small_ball_rect[0]
-                    small_ball_heigth = small_ball_rect[1] 
-
-
+                    small_ball_height = small_ball_rect[1] 
+ 
                     #왼쪽으로 팅겨나가는볼
                     balls.append({
                         'pos_x':ball_pos_x+ (ball_width /2) - (small_ball_width/2), #공의 x좌표
-                        'pos_y':ball_pos_y + (ball_height/2)- (small_ball_heigth/2),  #공의 y좌표
+                        'pos_y':ball_pos_y + (ball_height/2)- (small_ball_height/2),  #공의 y좌표
                         'img_idx' :ball_img_idx + 1, #공 1번 이미지
                         'to_x':-3, #x축이동방향, -3이면 왼쪽,3이면 오른쪽
                         'to_y':-6, #y축 이동방향,
@@ -195,10 +195,10 @@ while running:
                     #오른쪾으로 튕겨나가는볼
                     balls.append({
                         'pos_x':ball_pos_x+ (ball_width /2) - (small_ball_width/2), #공의 x좌표
-                        'pos_y':ball_pos_y + (ball_height/2)- (small_ball_heigth/2),  #공의 y좌표
+                        'pos_y':ball_pos_y + (ball_height/2)- (small_ball_height/2),  #공의 y좌표
                         'img_idx' :ball_img_idx + 1 , #공 1번 이미지
                         'to_x':3, #x축이동방향, -3이면 왼쪽,3이면 오른쪽          
-                        'to_y':-16, #y축 이동방향,
+                        'to_y':-6, #y축 이동방향,
                         'init_spd_y':ball_speed_y[ball_img_idx+1] #y의 최초속도
                     })  
 
