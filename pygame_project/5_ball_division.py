@@ -36,7 +36,7 @@ character_height = character_size[1] #캐릭터 세로
 
 character_x_pos = (screen_width/2) - (character_width/2)
 character_y_pos = screen_heigth - character_height - stage_height
-
+ 
 #캐릭터 이동방향
 character_to_x = 0
 
@@ -77,13 +77,15 @@ balls.append({
     'to_y':-6, #y축 이동방향,
     'init_spd_y':ball_speed_y[0] #y의 최초속도
 })
-
+#사라질 무기,공 정보 저장 할 변수 
+weapon_to_remove = -1
+ball_to_remove = -1
 
 
 
 running = True 
 while running: 
-    dt = clock.tick(30) 
+    dt = clock.tick(25 ) 
 
     # 2.이벤트처리 (키보드 마우스 등등)
     for event in pygame.event.get(): 
@@ -140,7 +142,79 @@ while running:
     ball_val['pos_x'] += ball_val['to_x']       
     ball_val['pos_y'] += ball_val['to_y']                                                                                           
     #4.충돌 처리
-    
+    character_rect = character.get_rect()
+    character_rect.left = character_x_pos
+    character_rect.top = character_y_pos
+ 
+    for ball_idx,ball_val in enumerate(balls):
+        ball_pos_x = ball_val['pos_x']
+        ball_pos_y = ball_val['pos_y']
+        ball_img_idx = ball_val['img_idx']
+        #공 rect정보 업데이트
+        ball_rect = ball_images[ball_img_idx].get_rect()
+        ball_rect.left = ball_pos_x
+        ball_rect.top = ball_pos_y
+
+        #공과 캐릭터 충돌 처리
+        if character_rect.colliderect(ball_rect):
+            running = False
+            break
+            #공과 무기들 충돌 처리
+        for weapon_idx,weapon_val in enumerate(weapons):
+            weapon_pos_x = weapon_val[0]
+            weapon_pos_y = weapon_val[1]
+            #무기들 rect정보 업데이트
+            weapon_rect = weapon.get_rect()
+            weapon_rect.left = weapon_pos_x
+            weapon_rect.top = weapon_pos_y 
+        #충돌체크
+            if weapon_rect.colliderect(ball_rect):
+                weapon_to_remove = weapon_idx #해당 무기 없애기 위한 값 설정
+                ball_to_remove = ball_idx #공없애기
+                #가장 작은 공의 크기가 아니라면 다음단계의 공으로 나누기 
+                if ball_img_idx < 3: 
+                    #현재 공 크기 정보를 가지고 옴
+                    ball_width = ball_rect.size[0]
+                    ball_height = ball_rect.size[1]
+
+                    #나눠진 공 정보 
+                    small_ball_rect = ball_images[ball_img_idx+1].get_rect()
+                    small_ball_width = small_ball_rect[0]
+                    small_ball_heigth = small_ball_rect[1] 
+
+
+                    #왼쪽으로 팅겨나가는볼
+                    balls.append({
+                        'pos_x':ball_pos_x+ (ball_width /2) - (small_ball_width/2), #공의 x좌표
+                        'pos_y':ball_pos_y + (ball_height/2)- (small_ball_heigth/2),  #공의 y좌표
+                        'img_idx' :ball_img_idx + 1, #공 1번 이미지
+                        'to_x':-3, #x축이동방향, -3이면 왼쪽,3이면 오른쪽
+                        'to_y':-6, #y축 이동방향,
+                        'init_spd_y':ball_speed_y[ball_img_idx+1] #y의 최초속도
+                    })
+                    #오른쪾으로 튕겨나가는볼
+                    balls.append({
+                        'pos_x':ball_pos_x+ (ball_width /2) - (small_ball_width/2), #공의 x좌표
+                        'pos_y':ball_pos_y + (ball_height/2)- (small_ball_heigth/2),  #공의 y좌표
+                        'img_idx' :ball_img_idx + 1 , #공 1번 이미지
+                        'to_x':3, #x축이동방향, -3이면 왼쪽,3이면 오른쪽          
+                        'to_y':-16, #y축 이동방향,
+                        'init_spd_y':ball_speed_y[ball_img_idx+1] #y의 최초속도
+                    })  
+
+                break
+     
+     #충돌된 공 and 무기 없애기
+    if ball_to_remove > -1:
+        del balls[ball_to_remove]  
+        ball_to_remove = -1
+
+    if weapon_to_remove > -1:
+        del weapons[weapon_to_remove]
+        weapon_to_remove = -1
+
+ 
+
     #5. 화면에 그리기
     screen.blit(background,(0,0))
     for weapon_x_pos,weapon_y_pos in weapons:
