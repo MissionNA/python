@@ -1,3 +1,9 @@
+# 1.모든 공을 없애면 게임 종료(성공)
+# 2.캐릭터가 공에 닿으면 게임 종료(실패)
+# 3.시간 제한 99초 초과 시 게임 종료(실패)
+
+
+
 import os
 import pygame
 ##########################################################################
@@ -80,13 +86,21 @@ balls.append({
 #사라질 무기,공 정보 저장 할 변수 
 weapon_to_remove = -1
 ball_to_remove = -1
+#폰트 정의
+game_font = pygame.font.Font(None,40)
+total_time = 22
+start_ticks = pygame.time.get_ticks() # 게임 시작시간 정의 
+
+# 게임 종료 메시지(TimeOut,MissionComplete,GameOver)
+game_result = 'GAME OVER'
+
 
 
 
 running = True 
 while running: 
-    dt = clock.tick(30) 
-
+    dt = clock.tick( 30)  
+                                              
     # 2.이벤트처리 (키보드 마우스 등등)
     for event in pygame.event.get(): 
         if event.type == pygame.QUIT:
@@ -97,13 +111,20 @@ while running:
                 character_to_x -= character_speed
             elif event.key == pygame.K_RIGHT:
                 character_to_x += character_speed
-            elif event.key == pygame.K_SPACE: #무기발사
+            elif event.key == pygame.K_z: #무기발사
                 weapon_x_pos = character_x_pos + (character_width/2)-(weapon_width/2)
                 weapon_y_pos = character_y_pos
                 weapons.append([weapon_x_pos,weapon_y_pos])
-                
-
-
+            elif event.key == pygame.K_x: #무기발사
+                weapon_x_pos = character_x_pos + (character_width/2)-(weapon_width/2)
+                weapon_y_pos = character_y_pos
+                weapons.append([weapon_x_pos,weapon_y_pos])
+            elif event.key == pygame.K_c: #무기발사
+                weapon_x_pos = character_x_pos + (character_width/2)-(weapon_width/2)
+                weapon_y_pos = character_y_pos
+                weapons.append([weapon_x_pos,weapon_y_pos])
+                                
+# zxczxczc
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 character_to_x = 0
@@ -203,17 +224,18 @@ while running:
                     })  
 
                 break
-        
-        #충돌된 공 and 무기 없애기
-    if ball_to_remove > -1:
-        del balls[ball_to_remove]  
-        ball_to_remove = -1
-
-    if weapon_to_remove > -1:
-        del weapons[weapon_to_remove]
-        weapon_to_remove = -1
-
-    
+            #충돌된 공 and 무기 없애기
+        if ball_to_remove > -1:
+            del balls[ball_to_remove]  
+            ball_to_remove = -1
+                
+        if weapon_to_remove > -1:
+            del weapons[weapon_to_remove]
+            weapon_to_remove = -1
+    # 모든 공을 없앤 경우 게임 종료(성공)
+        if len(balls) == 0:
+            game_result = 'Mission Complete'
+            running = False
 
     #5. 화면에 그리기
     screen.blit(background,(0,0))
@@ -225,10 +247,26 @@ while running:
             ball_pos_y = v['pos_y']
             ball_img_idx = v['img_idx']
             screen.blit(ball_images[ball_img_idx],(ball_pos_x,ball_pos_y))    
-
     screen.blit(stage,(0,screen_heigth-stage_height))
     screen.blit(character,(character_x_pos,character_y_pos))
-    
-    pygame.display.update()
+    #경과 시간 계산
+    elapsed_time = (pygame.time.get_ticks() - start_ticks)/1000  # ms -> 초환산    
+    timer = game_font.render('Time : {}'.format(int(total_time-elapsed_time)),True,(45,45,45)) 
+    screen.blit(timer,(10,10))
 
+    # 시간이 초과했다면
+    if total_time - elapsed_time <=0: 
+        game_result = 'Time Over'
+        running = False
+    pygame.display.update()    
+
+msg = game_font.render(game_result,True,(45,45,45))
+msg_rect = msg.get_rect(center = (int(screen_width/2),(int(screen_heigth/2)))) 
+screen.blit(msg,msg_rect)
+
+pygame.display.update()
+# 2초 대기
+pygame.time.delay(200)
+   
 pygame.quit()
+ 
