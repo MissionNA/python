@@ -99,7 +99,7 @@ game_result = 'GAME OVER'
 
 running = True 
 while running: 
-    dt = clock.tick( 30)  
+    dt = clock.tick(30)  
                                               
     # 2.이벤트처리 (키보드 마우스 등등)
     for event in pygame.event.get(): 
@@ -120,6 +120,10 @@ while running:
                 weapon_y_pos = character_y_pos
                 weapons.append([weapon_x_pos,weapon_y_pos])
             elif event.key == pygame.K_c: #무기발사
+                weapon_x_pos = character_x_pos + (character_width/2)-(weapon_width/2)
+                weapon_y_pos = character_y_pos
+                weapons.append([weapon_x_pos,weapon_y_pos])
+            elif event.key == pygame.K_v: #무기발사
                 weapon_x_pos = character_x_pos + (character_width/2)-(weapon_width/2)
                 weapon_y_pos = character_y_pos
                 weapons.append([weapon_x_pos,weapon_y_pos])
@@ -269,4 +273,8 @@ pygame.display.update()
 pygame.time.delay(200)
    
 pygame.quit()
- 
+if len(balls) == 0 and elapsed_time <= 1.693:
+    print(str(elapsed_time) +('초로 최고기록을 갱신하였습니다!'))
+elif len(balls) == 0 and elapsed_time > 1.693:
+    print(str(elapsed_time)+ ('초로 게임을 끝내셨습니다.'))
+else: print('못합니다.')
