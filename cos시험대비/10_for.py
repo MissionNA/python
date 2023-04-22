@@ -27,8 +27,8 @@
 #     print('왔나')
 # else:
 #     print('get the fuck out')
-id = input('아이디를 입력해주세요')
-members = ['쒮똻','뚊','뙇','뽥쀐','天安門']
+id = input('아이디를 입력해주세요 : ')
+members = ['돌돔','뚊']
 for member in members:
     if member == id:
         print('안녕하세요,'+member)
