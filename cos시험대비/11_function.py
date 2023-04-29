@@ -41,6 +41,6 @@
 # print(a(3))
 
 # 함수의 입력(여러게)
-def multi_string(str,num):
-    return str*num
-print(multi_string('b',3))
+def gugu(num,num2):
+    return num*num2
+print(gugu(1,3))
