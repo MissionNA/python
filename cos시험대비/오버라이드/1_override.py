@@ -1,7 +1,7 @@
 #오버라이드 형식
 class C1:
     def m(self):
-        return '석궁'
+        return '활과 화살'
     
 class C2(C1):
     def m(self):
